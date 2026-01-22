@@ -6,6 +6,7 @@
 #include <arpa/inet.h>
 #include <openssl/ssl.h>
 #include <openssl/err.h>
+#include "../include/env.h"
 #include "../include/client.h"
 
 
@@ -137,6 +138,67 @@ int client_receive(Client *client, char *buf, unsigned int len) {
 
     buf[n] = '\0';
     return n;
+}
+
+
+
+int client_post(Client *client, const char *path, const char *json_body) {
+    if (!client -> is_connected || !client -> ssl) {
+        return -1;
+    }
+
+    char req_buf[4096];
+    unsigned int body_len = (unsigned int)strlen(json_body);
+
+    int len = snprintf(req_buf, sizeof(req_buf),
+        "POST %s HTTP/1.1\r\n"
+        "Host: discord.com\r\n"
+        "Authorization: Bot %s\r\n"
+        "User-Agent: DiscordBot(BareBot, 1.0)\r\n"
+        "Content-Type: application/json\r\n"
+        "Content-Length: %u\r\n"
+        "\r\n"
+        "%s",
+        path,
+        config.discord_token,
+        body_len,
+        json_body
+        );
+
+    if (len < 0 || (unsigned int)len >= sizeof(req_buf)) {
+        fprintf(stderr, "[ERROR] Requested Buffer is too large");
+        return -1;
+    }
+
+    printf("[INFO] Sending POST to %s\n", path);
+    return client_send(client, req_buf, (unsigned int)len);
+}
+
+
+int client_get(Client *client, const char *path) {
+    if (!client -> is_connected || !client -> ssl) {
+        return -1;
+    }
+
+    char req_buf[4096];
+
+    int len = snprintf(req_buf, sizeof(req_buf),
+        "GET %s HTTP/1.1\r\n"
+        "Host: discord.com\r\n"
+        "Authorization: Bot %s\r\n"
+        "User-Agent: DiscordBot(BareBot, 1.0)\r\n"
+        "Connection: close\r\n"
+        "\r\n",
+        path,
+        config.discord_token);
+    printf("[DEBUG]  req_buf: %s\n", req_buf);
+    if (len < 0 || len >= sizeof(req_buf)) {
+        fprintf(stderr, "[ERROR] GET request too large.\n");
+        return -1;
+    }
+
+    printf("[INFO] Sending info to %s\n", path);
+    return client_send(client, req_buf, (unsigned int) len);
 }
 
 

@@ -15,6 +15,8 @@ typedef struct {
 int client_connect(Client *client, const char *hostname, const char *port);
 int client_send(Client *client, const char *data, unsigned int len);
 int client_receive(Client *client, char *buffer, unsigned int len);
+int client_post(Client *client, const char *path, const char *json_body);
+int client_get(Client *client, const char *path);
 void client_cleanup(Client *client);
 
 

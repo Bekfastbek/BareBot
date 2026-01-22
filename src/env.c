@@ -7,14 +7,14 @@
 
 
 char *remove_whitespace(char *buf) {
-    char *end;
     while (isspace(*buf)) {
         buf++;
     }
     if (*buf == 0) {
         return buf;
     }
-    end = buf + strlen(buf) - 1;
+
+    char *end = buf + strlen(buf) - 1;
     while (end > buf && isspace(*end)) {
         end--;
     }
@@ -26,8 +26,7 @@ char *remove_whitespace(char *buf) {
 
 struct Config config;
 void loadenv() {
-    FILE *buf;
-    buf = fopen("../.env", "r");
+    FILE *buf = fopen("../.env", "r");
 
     if (buf == NULL) {
         printf("File empty or improperly set. Exiting...");

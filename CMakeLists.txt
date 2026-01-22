@@ -17,6 +17,7 @@ set(TESTS tests/tests.c
           tests/test_client.c
           tests/test_env.c
           tests/test_keygen.c
+        tests/test_http.c
 )
 
 add_executable(run_tests ${SRC} ${TESTS})

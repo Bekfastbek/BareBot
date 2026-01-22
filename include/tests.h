@@ -8,6 +8,7 @@ extern struct Report {
     bool env;
     bool keygen;
     bool client;
+    bool http;
 } report;
 
 
@@ -15,6 +16,7 @@ extern struct Report {
 void test_env();
 void test_keygen();
 void test_client();
+void test_http();
 
 
 
