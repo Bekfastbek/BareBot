@@ -1,6 +1,8 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+
+
 void keygen(char *output);
 
 extern struct Config {
@@ -9,5 +11,7 @@ extern struct Config {
 } config;
 
 void loadenv();
+
+
 
 #endif

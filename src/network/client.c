@@ -32,11 +32,11 @@ int client_connect(Client *client, const char *hostname, const char *port) {
         const char *ipver;
 
         if(p -> ai_family == AF_INET) {
-            struct sockaddr_in *ipv4 = (struct sockaddr_in *)p -> ai_addr;
+            const auto ipv4 = (struct sockaddr_in *)p -> ai_addr;
             addr = &(ipv4 -> sin_addr);
             ipver = "IPv4";
         } else {
-            struct sockaddr_in6 *ipv6 = (struct sockaddr_in6 *)p -> ai_addr;
+            const auto ipv6 = (struct sockaddr_in6 *)p -> ai_addr;
             addr = &(ipv6 -> sin6_addr);
             ipver = "IPv6";
         }
@@ -93,16 +93,16 @@ int client_connect(Client *client, const char *hostname, const char *port) {
 
 
 
-int client_send(Client *client, const char *data, unsigned int len) {
+int client_send(const Client *client, const char *data, const int len) {
     if (!client -> is_connected || !client -> ssl) {
         return -1;
     }
 
-    unsigned int sent = 0;
-    unsigned int bytes_left = len;
+    int sent = 0;
+    int bytes_left = len;
 
     while (sent < len) {
-        long int n = SSL_write(client -> ssl, data + sent, bytes_left);
+        const int n = SSL_write(client -> ssl, data + sent, bytes_left);
 
         if (n <= 0) {
             const int err = SSL_get_error(client -> ssl, n);
@@ -121,15 +121,15 @@ int client_send(Client *client, const char *data, unsigned int len) {
 
 
 
-int client_receive(Client *client, char *buf, unsigned int len) {
+int client_receive(const Client *client, char *buf, const int len) {
     if (!client -> is_connected || !client -> ssl) {
         return -1;
     }
 
-    int n = SSL_read(client -> ssl, buf, len -1);
+    const int n = SSL_read(client -> ssl, buf, len -1);
 
     if (n <= 0) {
-        int err = SSL_get_error(client -> ssl, n);
+        const int err = SSL_get_error(client -> ssl, n);
         if (err == SSL_ERROR_ZERO_RETURN) {
             return 0;
         }
@@ -142,15 +142,15 @@ int client_receive(Client *client, char *buf, unsigned int len) {
 
 
 
-int client_post(Client *client, const char *path, const char *json_body) {
+int client_post(const Client *client, const char *path, const char *json_body) {
     if (!client -> is_connected || !client -> ssl) {
         return -1;
     }
 
     char req_buf[4096];
-    unsigned int body_len = (unsigned int)strlen(json_body);
+    const unsigned int body_len = (unsigned int)strlen(json_body);
 
-    int len = snprintf(req_buf, sizeof(req_buf),
+    const int len = snprintf(req_buf, sizeof(req_buf),
         "POST %s HTTP/1.1\r\n"
         "Host: discord.com\r\n"
         "Authorization: Bot %s\r\n"
@@ -171,18 +171,18 @@ int client_post(Client *client, const char *path, const char *json_body) {
     }
 
     printf("[INFO] Sending POST to %s\n", path);
-    return client_send(client, req_buf, (unsigned int)len);
+    return client_send(client, req_buf, len);
 }
 
 
-int client_get(Client *client, const char *path) {
+int client_get(const Client *client, const char *path) {
     if (!client -> is_connected || !client -> ssl) {
         return -1;
     }
 
     char req_buf[4096];
 
-    int len = snprintf(req_buf, sizeof(req_buf),
+    const int len = snprintf(req_buf, sizeof(req_buf),
         "GET %s HTTP/1.1\r\n"
         "Host: discord.com\r\n"
         "Authorization: Bot %s\r\n"
@@ -197,7 +197,7 @@ int client_get(Client *client, const char *path) {
     }
 
     printf("[INFO] Sending info to %s\n", path);
-    return client_send(client, req_buf, (unsigned int) len);
+    return client_send(client, req_buf, len);
 }
 
 

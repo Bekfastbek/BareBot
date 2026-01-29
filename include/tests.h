@@ -1,18 +1,15 @@
 #ifndef TESTS_H
 #define TESTS_H
-#include <stdbool.h>
 
 
 
-extern struct Report {
+extern struct report_test {
     bool env;
     bool keygen;
     bool client;
     bool http;
     bool websocket;
 } report;
-
-
 
 void test_env();
 void test_keygen();

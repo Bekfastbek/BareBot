@@ -34,7 +34,7 @@ void loadenv() {
     }
 
     fseek(buf, 0, SEEK_END);
-    long long length = ftell(buf);
+    const long length = ftell(buf);
     rewind(buf);
     char *stream = malloc(length + 1);
 
@@ -43,10 +43,10 @@ void loadenv() {
         exit(1);
     }
 
-    while (fgets(stream, length+1, buf)) {
+    while (fgets(stream, (int)length+1, buf)) {
         stream[strcspn(stream, "\n")] = 0;
         char *key = strtok(stream, "=");
-        char *value = strtok(NULL, "");
+        char *value = strtok(nullptr, "");
 
         if (key == NULL || value == NULL) {
             continue;

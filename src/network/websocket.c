@@ -17,7 +17,7 @@ volatile bool loop = true;
 
 
 
-int client_upgrade(Client *client, const char *path) {
+int client_upgrade(const Client *client, const char *path) {
     if (!client -> is_connected || !client -> ssl) {
         return -1;
     }
@@ -43,7 +43,7 @@ int client_upgrade(Client *client, const char *path) {
         return -1;
     }
     printf("[INFO] Sending upgrade signal to discord...\n");
-    return client_send(client, req_buf, (unsigned int)len);
+    return client_send(client, req_buf, len);
 }
 
 
@@ -80,7 +80,7 @@ void generate_mask(unsigned char *mask_key) {
 
 
 
-int ws_send_text(Client *client, const char *text) {
+int ws_send_text(const Client *client, const char *text) {
     const unsigned int len = strlen(text);
     unsigned char *frame = malloc(len + 14);
     if (!frame) {
@@ -112,14 +112,14 @@ int ws_send_text(Client *client, const char *text) {
         frame[idx + i] = text[i] ^ mask_key[i % 4];
     }
 
-    const int result = client_send(client, (char *)frame, idx + len);
+    const int result = client_send(client, (char *)frame, (int)(idx + len));
     free(frame);
     return result;
 }
 
 
 
-void send_heartbeat(Client *client) {
+void send_heartbeat(const Client *client) {
     char payload[64];
 
     if (has_received_seq) {
@@ -140,9 +140,9 @@ void ws_stop() {
 
 
 
-void *ws_heartbeat_thread(void *arg) {
-    Client *client = (Client *)arg;
-    printf("[THREAD0] Heartbeat thread started.\n");
+void *ws_heartbeat_thread(void *arg) { // I don't want to make this const since pthread format gets messed up
+    const Client *client = arg;
+    printf("[THREAD] Heartbeat thread started.\n");
 
     while (loop) {
         usleep(heartbeat_interval * 1000);

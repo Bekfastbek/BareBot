@@ -45,7 +45,7 @@ void encodeb64(const unsigned char *raw_data, const int raw_len, char *output) {
 
 
 void keygen(char *output) {
-    const int ENTROPY_SIZE = 16;
+    constexpr int ENTROPY_SIZE = 16;
     unsigned char rand_data[ENTROPY_SIZE];
     randBytes(rand_data, ENTROPY_SIZE);
     encodeb64(rand_data, ENTROPY_SIZE, output);
