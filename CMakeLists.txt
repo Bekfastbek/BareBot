@@ -1,16 +1,15 @@
 cmake_minimum_required(VERSION 4.1)
 project(bot C)
 
-set(CMAKE_C_STANDARD 11)
+set(CMAKE_C_STANDARD 23)
 find_package(OpenSSL REQUIRED)
 include_directories(include ${OPENSSL_INCLUDE_DIR})
 
-set(SRC src/env.c
-        include/env.h
+set(SRC src/utils/env.c
         src/utils/keygen.c
         include/utils.h
-        include/client.h
-        src/client.c
+        include/network.h
+        src/network/client.c
 )
 
 set(TESTS tests/tests.c
@@ -18,6 +17,8 @@ set(TESTS tests/tests.c
           tests/test_env.c
           tests/test_keygen.c
         tests/test_http.c
+        src/network/websocket.c
+        tests/test_websocket.c
 )
 
 add_executable(run_tests ${SRC} ${TESTS})

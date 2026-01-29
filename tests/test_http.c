@@ -1,14 +1,12 @@
 #include <stdio.h>
 #include <string.h>
-#include <stdbool.h>
-#include "../include/env.h"
-#include "../include/client.h"
+#include "../include/utils.h"
+#include "../include/network.h"
 #include "../include/tests.h"
 
 
 
 void test_http() {
-
     printf("\n==================================\n");
     printf("[TEST] HTTP Protocols (POST & GET) \n");
     printf("==================================\n");
@@ -60,12 +58,16 @@ void test_http() {
     }
 
     client_cleanup(&client);
+    memset(&client, 0, sizeof(client));
+
+
+
     if (get_success == true && post_success == true) {
         printf("[PASS] HTTP Test Successful.");
         report.http = true;
     } else {
         printf(
-            "[FAIL] HTTP Test Failed.\nGET = %s\nPOST= %s",
+            "[FAIL] HTTP Test Failed.\nGET = %s\nPOST= %s\n",
                 get_success ? "Success" : "Failed",
                 post_success ? "Success" : "Failed"
                 );

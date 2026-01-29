@@ -6,8 +6,8 @@
 #include <arpa/inet.h>
 #include <openssl/ssl.h>
 #include <openssl/err.h>
-#include "../include/env.h"
-#include "../include/client.h"
+#include "../../include/utils.h"
+#include "../../include/network.h"
 
 
 
@@ -191,7 +191,6 @@ int client_get(Client *client, const char *path) {
         "\r\n",
         path,
         config.discord_token);
-    printf("[DEBUG]  req_buf: %s\n", req_buf);
     if (len < 0 || len >= sizeof(req_buf)) {
         fprintf(stderr, "[ERROR] GET request too large.\n");
         return -1;

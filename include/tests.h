@@ -9,6 +9,7 @@ extern struct Report {
     bool keygen;
     bool client;
     bool http;
+    bool websocket;
 } report;
 
 
@@ -17,6 +18,7 @@ void test_env();
 void test_keygen();
 void test_client();
 void test_http();
+void test_websocket();
 
 
 
