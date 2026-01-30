@@ -9,7 +9,7 @@ set(SRC src/utils/env.c
         src/utils/keygen.c
         include/utils.h
         include/network.h
-        src/network/client.c
+        src/network/http/client.c
 )
 
 set(TESTS tests/tests.c
@@ -17,8 +17,10 @@ set(TESTS tests/tests.c
           tests/test_env.c
           tests/test_keygen.c
         tests/test_http.c
-        src/network/websocket.c
+        src/network/websocket/websocket.c
         tests/test_websocket.c
+        src/network/http/http.c
+        src/network/websocket/heartbeat.c
 )
 
 add_executable(run_tests ${SRC} ${TESTS})

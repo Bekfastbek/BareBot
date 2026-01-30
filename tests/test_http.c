@@ -11,7 +11,7 @@ void test_http() {
     printf("[TEST] HTTP Protocols (POST & GET) \n");
     printf("==================================\n");
 
-    Client client = {0};
+    client client = {0};
     char buf[4096];
     bool get_success = false;
     bool post_success = false;
@@ -32,8 +32,6 @@ void test_http() {
     } else {
             printf("[FAIL] Connection Failed (Network Error).\n");
     }
-
-
     client_cleanup(&client);
     memset(&client, 0, sizeof(client));
 
@@ -56,11 +54,8 @@ void test_http() {
     } else {
         printf("[FAIL] Re-connection for POST Failed.\n");
     }
-
     client_cleanup(&client);
     memset(&client, 0, sizeof(client));
-
-
 
     if (get_success == true && post_success == true) {
         printf("[PASS] HTTP Test Successful.");

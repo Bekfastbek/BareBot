@@ -9,7 +9,7 @@ void test_client() {
     printf("[TEST] SSL Connection Handshake\n");
     printf("==================================\n");
 
-    Client client = {0};
+    client client = {0};
     bool client_success = true;
 
     printf("[INFO] Connecting to discord.com...\n");

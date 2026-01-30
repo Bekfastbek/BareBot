@@ -6,12 +6,11 @@
 #include <arpa/inet.h>
 #include <openssl/ssl.h>
 #include <openssl/err.h>
-#include "../../include/utils.h"
-#include "../../include/network.h"
+#include "../../../include/network.h"
 
 
 
-int client_connect(Client *client, const char *hostname, const char *port) {
+int client_connect(client *client, const char *hostname, const char *port) {
 
     struct addrinfo hints, *res, *p;
     int status;
@@ -93,13 +92,13 @@ int client_connect(Client *client, const char *hostname, const char *port) {
 
 
 
-int client_send(const Client *client, const char *data, const int len) {
+int client_send(const client *client, const char *data, const int len) {
     if (!client -> is_connected || !client -> ssl) {
         return -1;
     }
 
     int sent = 0;
-    int bytes_left = len;
+    unsigned short bytes_left = len; // If bot blows up, blame this hyper-optimization although you are weird for sending large requests in json in the first place
 
     while (sent < len) {
         const int n = SSL_write(client -> ssl, data + sent, bytes_left);
@@ -121,7 +120,7 @@ int client_send(const Client *client, const char *data, const int len) {
 
 
 
-int client_receive(const Client *client, char *buf, const int len) {
+int client_receive(const client *client, char *buf, const int len) {
     if (!client -> is_connected || !client -> ssl) {
         return -1;
     }
@@ -142,67 +141,7 @@ int client_receive(const Client *client, char *buf, const int len) {
 
 
 
-int client_post(const Client *client, const char *path, const char *json_body) {
-    if (!client -> is_connected || !client -> ssl) {
-        return -1;
-    }
-
-    char req_buf[4096];
-    const unsigned int body_len = (unsigned int)strlen(json_body);
-
-    const int len = snprintf(req_buf, sizeof(req_buf),
-        "POST %s HTTP/1.1\r\n"
-        "Host: discord.com\r\n"
-        "Authorization: Bot %s\r\n"
-        "User-Agent: DiscordBot(BareBot, 1.0)\r\n"
-        "Content-Type: application/json\r\n"
-        "Content-Length: %u\r\n"
-        "\r\n"
-        "%s",
-        path,
-        config.discord_token,
-        body_len,
-        json_body
-        );
-
-    if (len < 0 || (unsigned int)len >= sizeof(req_buf)) {
-        fprintf(stderr, "[ERROR] Requested Buffer is too large");
-        return -1;
-    }
-
-    printf("[INFO] Sending POST to %s\n", path);
-    return client_send(client, req_buf, len);
-}
-
-
-int client_get(const Client *client, const char *path) {
-    if (!client -> is_connected || !client -> ssl) {
-        return -1;
-    }
-
-    char req_buf[4096];
-
-    const int len = snprintf(req_buf, sizeof(req_buf),
-        "GET %s HTTP/1.1\r\n"
-        "Host: discord.com\r\n"
-        "Authorization: Bot %s\r\n"
-        "User-Agent: DiscordBot(BareBot, 1.0)\r\n"
-        "Connection: close\r\n"
-        "\r\n",
-        path,
-        config.discord_token);
-    if (len < 0 || len >= sizeof(req_buf)) {
-        fprintf(stderr, "[ERROR] GET request too large.\n");
-        return -1;
-    }
-
-    printf("[INFO] Sending info to %s\n", path);
-    return client_send(client, req_buf, len);
-}
-
-
-
-void client_cleanup(Client *client) {
+void client_cleanup(client *client) {
     if (client -> ssl) {
         SSL_shutdown(client -> ssl);
         SSL_free(client -> ssl);

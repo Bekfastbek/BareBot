@@ -11,7 +11,7 @@ void test_websocket() {
     printf("[TEST] Websocket and Heartbeat\n");
     printf("==================================\n");
 
-    Client client = {0};
+    client client = {0};
     bool ws_success = false;
     bool heartbeat_success = false;
     bool close_success = false;

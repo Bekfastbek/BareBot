@@ -5,7 +5,7 @@
 
 void keygen(char *output);
 
-extern struct Config {
+extern struct config_env {
     char *discord_token;
     char *channelid;
 } config;

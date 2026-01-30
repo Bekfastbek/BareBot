@@ -4,6 +4,9 @@
 
 
 struct report_test report = {false};
+
+
+
 int main() {
     printf("==============RUNNING TESTS==============\n\n");
     test_env();

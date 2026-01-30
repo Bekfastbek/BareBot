@@ -6,6 +6,10 @@
 
 
 
+struct config_env config;
+
+
+
 char *remove_whitespace(char *buf) {
     while (isspace(*buf)) {
         buf++;
@@ -24,7 +28,6 @@ char *remove_whitespace(char *buf) {
 
 
 
-struct Config config;
 void loadenv() {
     FILE *buf = fopen("../.env", "r");
 
@@ -46,9 +49,11 @@ void loadenv() {
     while (fgets(stream, (int)length+1, buf)) {
         stream[strcspn(stream, "\n")] = 0;
         char *key = strtok(stream, "=");
+        if (key == NULL) {
+            continue;
+        }
         char *value = strtok(nullptr, "");
-
-        if (key == NULL || value == NULL) {
+        if (value == NULL) {
             continue;
         }
 
@@ -56,12 +61,12 @@ void loadenv() {
         value = remove_whitespace(value);
 
         if (strcmp(key, "DISCORD_TOKEN") == 0 || strcmp(key, "DISCORD_TOKEN ") == 0) {
-            size_t token_len = strlen(value);
+            const unsigned short token_len = strlen(value);
             config.discord_token = malloc(token_len + 1);
             strcpy(config.discord_token, value);
         }
         if (strcmp(key, "CHANNEL_ID") == 0 || strcmp(key, "CHANNEL_ID ") == 0) {
-            size_t id_len = strlen(value);
+            const unsigned short id_len = strlen(value);
             config.channelid = malloc(id_len + 1);
             strcpy(config.channelid, value);
         }

@@ -17,6 +17,7 @@ bool is_base64(const char *buf) {
 }
 
 
+
 void test_keygen() {
     printf("\n==================================\n");
     printf("[TEST] Keygen Generation\n");
