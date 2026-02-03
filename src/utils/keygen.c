@@ -7,11 +7,11 @@
 
 
 void keygen(char *output) {
-    unsigned char rand_data[16];
-    if (RAND_bytes(rand_data, 16) != 1) {
+    unsigned char random_data[16];
+    if (RAND_bytes(random_data, 16) != 1) {
         fprintf(stderr, "[ERROR] Randomization failed. Exiting...");
         exit(1);
     }
 
-    EVP_EncodeBlock((unsigned char *)output, rand_data, 16);
+    EVP_EncodeBlock((unsigned char *)output, random_data, 16);
 }

@@ -92,15 +92,15 @@ int client_connect(client *client, const char *hostname, const char *port) {
 
 
 
-int client_send(const client *client, const char *data, const int len) {
+int client_send(const client *client, const char *data, const int length) {
     if (!client -> is_connected || !client -> ssl) {
         return -1;
     }
 
     int sent = 0;
-    unsigned short bytes_left = len; // If bot blows up, blame this hyper-optimization although you are weird for sending large requests in json in the first place
+    unsigned short bytes_left = length; // If bot blows up, blame this hyper-optimization although you are weird for sending large requests in json in the first place
 
-    while (sent < len) {
+    while (sent < length) {
         const int n = SSL_write(client -> ssl, data + sent, bytes_left);
 
         if (n <= 0) {
@@ -120,12 +120,12 @@ int client_send(const client *client, const char *data, const int len) {
 
 
 
-int client_receive(const client *client, char *buf, const int len) {
+int client_receive(const client *client, char *buffer, const int length) {
     if (!client -> is_connected || !client -> ssl) {
         return -1;
     }
 
-    const int n = SSL_read(client -> ssl, buf, len -1);
+    const int n = SSL_read(client -> ssl, buffer, length -1);
 
     if (n <= 0) {
         const int err = SSL_get_error(client -> ssl, n);
@@ -135,7 +135,7 @@ int client_receive(const client *client, char *buf, const int len) {
         return -1;
     }
 
-    buf[n] = '\0';
+    buffer[n] = '\0';
     return n;
 }
 

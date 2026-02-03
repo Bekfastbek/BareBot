@@ -10,10 +10,10 @@ int client_post(const client *client, const char *path, const char *json_body) {
         return -1;
     }
 
-    char headers[1024];
-    const unsigned short body_len = (unsigned int)strlen(json_body);
+    char request_buffer[1024];
+    const unsigned short body_length = (unsigned int)strlen(json_body);
 
-    const int len = snprintf(headers, sizeof(headers),
+    const int length = snprintf(request_buffer, sizeof(request_buffer),
         "POST %s HTTP/1.1\r\n"
         "Host: discord.com\r\n"
         "Authorization: Bot %s\r\n"
@@ -24,19 +24,19 @@ int client_post(const client *client, const char *path, const char *json_body) {
         "%s",
         path,
         config.discord_token,
-        body_len,
+        body_length,
         json_body
         );
 
-    if (len < 0 || (unsigned int)len >= sizeof(headers)) {
+    if (length < 0 || (unsigned int)length >= sizeof(request_buffer)) {
         fprintf(stderr, "[ERROR] Requested Buffer is too large");
         return -1;
     }
-    if (client_send(client, headers, len) < 0) {
+    if (client_send(client, request_buffer, length) < 0) {
         return -1;
     }
     printf("[INFO] Sending POST to %s\n", path);
-    return client_send(client, json_body, len);
+    return client_send(client, json_body, length);
 }
 
 
@@ -45,9 +45,9 @@ int client_get(const client *client, const char *path) {
         return -1;
     }
 
-    char req_buf[512];
+    char request_buffer[512];
 
-    const int len = snprintf(req_buf, sizeof(req_buf),
+    const int length = snprintf(request_buffer, sizeof(request_buffer),
         "GET %s HTTP/1.1\r\n"
         "Host: discord.com\r\n"
         "Authorization: Bot %s\r\n"
@@ -56,11 +56,11 @@ int client_get(const client *client, const char *path) {
         "\r\n",
         path,
         config.discord_token);
-    if (len < 0 || len >= sizeof(req_buf)) {
+    if (length < 0 || length >= sizeof(request_buffer)) {
         fprintf(stderr, "[ERROR] GET request too large.\n");
         return -1;
     }
 
     printf("[INFO] Sending info to %s\n", path);
-    return client_send(client, req_buf, len);
+    return client_send(client, request_buffer, length);
 }

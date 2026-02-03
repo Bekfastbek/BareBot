@@ -10,35 +10,35 @@ struct config_env config;
 
 
 
-char *remove_whitespace(char *buf) {
-    while (isspace(*buf)) {
-        buf++;
+char *remove_whitespace(char *buffer) {
+    while (isspace(*buffer)) {
+        buffer++;
     }
-    if (*buf == 0) {
-        return buf;
+    if (*buffer == 0) {
+        return buffer;
     }
 
-    char *end = buf + strlen(buf) - 1;
-    while (end > buf && isspace(*end)) {
+    char *end = buffer + strlen(buffer) - 1;
+    while (end > buffer && isspace(*end)) {
         end--;
     }
     end[1] = '\0';
-    return buf;
+    return buffer;
 }
 
 
 
 void loadenv() {
-    FILE *buf = fopen("../.env", "r");
+    FILE *buffer = fopen("../.env", "r");
 
-    if (buf == NULL) {
+    if (buffer == NULL) {
         printf("File empty or improperly set. Exiting...");
         exit(1);
     }
 
-    fseek(buf, 0, SEEK_END);
-    const long length = ftell(buf);
-    rewind(buf);
+    fseek(buffer, 0, SEEK_END);
+    const long length = ftell(buffer);
+    rewind(buffer);
     char *stream = malloc(length + 1);
 
     if (stream == NULL) {
@@ -46,7 +46,7 @@ void loadenv() {
         exit(1);
     }
 
-    while (fgets(stream, (int)length+1, buf)) {
+    while (fgets(stream, (int)length+1, buffer)) {
         stream[strcspn(stream, "\n")] = 0;
         char *key = strtok(stream, "=");
         if (key == NULL) {
@@ -61,17 +61,17 @@ void loadenv() {
         value = remove_whitespace(value);
 
         if (strcmp(key, "DISCORD_TOKEN") == 0 || strcmp(key, "DISCORD_TOKEN ") == 0) {
-            const unsigned short token_len = strlen(value);
-            config.discord_token = malloc(token_len + 1);
+            const unsigned short token_length = strlen(value);
+            config.discord_token = malloc(token_length + 1);
             strcpy(config.discord_token, value);
         }
         if (strcmp(key, "CHANNEL_ID") == 0 || strcmp(key, "CHANNEL_ID ") == 0) {
-            const unsigned short id_len = strlen(value);
-            config.channelid = malloc(id_len + 1);
+            const unsigned short id_length = strlen(value);
+            config.channelid = malloc(id_length + 1);
             strcpy(config.channelid, value);
         }
     }
-    fclose(buf);
+    fclose(buffer);
     free(stream);
 
     if(config.discord_token == NULL || config.channelid == NULL) {
